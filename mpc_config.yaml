@@ -1,0 +1,10 @@
+bag_directory: "."
+bag_name: "ctrl_mpc_linearized_expe.bag"
+dt_ocp: 0.05
+mpc_freq: 100
+nb_running_nodes: 9
+endeff_name: "panda_joint7"
+
+# optional parameter
+mpc_data_topic_name: "/ctrl_mpc_linearized/xu_solution"
+T_sim: 8
