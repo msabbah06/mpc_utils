@@ -2,9 +2,9 @@ import os
 
 import example_robot_data
 import pinocchio as pin
-from read_bags_utils import get_mpc_xs_us
+from mpc_utils.read_bags_utils import get_mpc_xs_us
 import yaml
-from plot_tails import plot_tails
+from mpc_utils.plot_tails import plot_tails
 
 
 def get_robot_model(robot):

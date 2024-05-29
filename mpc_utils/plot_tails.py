@@ -1,6 +1,6 @@
 import numpy as np
 
-import mpc_utils
+from .mpc_utils import init_sim_data, extract_plot_data_from_sim_data, plot_mpc_results
 
 
 def get_active_costs(ctrl_refs, state_refs, translation_refs):
@@ -60,7 +60,7 @@ def plot_tails(
         sim_params["T_sim"] = int(mpc_xs.shape[0] / mpc_config["mpc_freq"])
 
     # Initialize simulation data
-    sim_data = mpc_utils.init_sim_data(sim_params, ocp_params, mpc_xs[0, 0, :])
+    sim_data = init_sim_data(sim_params, ocp_params, mpc_xs[0, 0, :])
 
     # mpc_cycle = 0
     for mpc_cycle in range(sim_data["N_sim"]):
@@ -101,9 +101,9 @@ def plot_tails(
                 mpc_cycle + 1, 0, :
             ]
 
-    plot_data = mpc_utils.extract_plot_data_from_sim_data(sim_data)
+    plot_data = extract_plot_data_from_sim_data(sim_data)
 
-    mpc_utils.plot_mpc_results(
+    plot_mpc_results(
         plot_data,
         which_plots=["x", "u", "ee"],
         PLOT_PREDICTIONS=True,
