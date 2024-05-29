@@ -3,7 +3,7 @@ import pinocchio as pin
 from matplotlib.collections import LineCollection
 import matplotlib.pyplot as plt
 import matplotlib
-import pin_utils
+from .pin_utils import *
 
 import pybullet as p
 import os
@@ -320,7 +320,7 @@ def extract_plot_data_from_sim_data(sim_data):
     # Extract gravity torques
     plot_data["grav"] = np.zeros((sim_data["N_sim"] + 1, plot_data["nq"]))
     for i in range(plot_data["N_sim"] + 1):
-        plot_data["grav"][i, :] = pin_utils.get_u_grav(
+        plot_data["grav"][i, :] = get_u_grav(
             plot_data["q_mea"][i, :], plot_data["pin_model"], sim_data["armature"]
         )
     # EE predictions (at PLAN freq)
@@ -331,23 +331,23 @@ def extract_plot_data_from_sim_data(sim_data):
     plot_data["ang_pos_ee_pred"] = np.zeros((sim_data["N_mpc"], sim_data["N_h"] + 1, 3))
     plot_data["ang_vel_ee_pred"] = np.zeros((sim_data["N_mpc"], sim_data["N_h"] + 1, 3))
     for node_id in range(sim_data["N_h"] + 1):
-        plot_data["lin_pos_ee_pred"][:, node_id, :] = pin_utils.get_p_(
+        plot_data["lin_pos_ee_pred"][:, node_id, :] = get_p_(
             plot_data["q_pred"][:, node_id, :],
             plot_data["pin_model"],
             sim_data["id_endeff"],
         )
-        plot_data["lin_vel_ee_pred"][:, node_id, :] = pin_utils.get_v_(
+        plot_data["lin_vel_ee_pred"][:, node_id, :] = get_v_(
             plot_data["q_pred"][:, node_id, :],
             plot_data["v_pred"][:, node_id, :],
             plot_data["pin_model"],
             sim_data["id_endeff"],
         )
-        plot_data["ang_pos_ee_pred"][:, node_id, :] = pin_utils.get_rpy_(
+        plot_data["ang_pos_ee_pred"][:, node_id, :] = get_rpy_(
             plot_data["q_pred"][:, node_id, :],
             plot_data["pin_model"],
             sim_data["id_endeff"],
         )
-        plot_data["ang_vel_ee_pred"][:, node_id, :] = pin_utils.get_w_(
+        plot_data["ang_vel_ee_pred"][:, node_id, :] = get_w_(
             plot_data["q_pred"][:, node_id, :],
             plot_data["v_pred"][:, node_id, :],
             plot_data["pin_model"],
@@ -355,20 +355,20 @@ def extract_plot_data_from_sim_data(sim_data):
         )
     # EE measurements (at SIMU freq)
     # Linear
-    plot_data["lin_pos_ee_mea"] = pin_utils.get_p_(
+    plot_data["lin_pos_ee_mea"] = get_p_(
         plot_data["q_mea"], sim_data["pin_model"], sim_data["id_endeff"]
     )
-    plot_data["lin_vel_ee_mea"] = pin_utils.get_v_(
+    plot_data["lin_vel_ee_mea"] = get_v_(
         plot_data["q_mea"],
         plot_data["v_mea"],
         sim_data["pin_model"],
         sim_data["id_endeff"],
     )
     # Angular
-    plot_data["ang_pos_ee_mea"] = pin_utils.get_rpy_(
+    plot_data["ang_pos_ee_mea"] = get_rpy_(
         plot_data["q_mea"], sim_data["pin_model"], sim_data["id_endeff"]
     )
-    plot_data["ang_vel_ee_mea"] = pin_utils.get_w_(
+    plot_data["ang_vel_ee_mea"] = get_w_(
         plot_data["q_mea"],
         plot_data["v_mea"],
         sim_data["pin_model"],
@@ -376,38 +376,38 @@ def extract_plot_data_from_sim_data(sim_data):
     )
     # EE des
     # Linear
-    plot_data["lin_pos_ee_des_MPC_RATE"] = pin_utils.get_p_(
+    plot_data["lin_pos_ee_des_MPC_RATE"] = get_p_(
         plot_data["q_des_MPC_RATE"], sim_data["pin_model"], sim_data["id_endeff"]
     )
-    plot_data["lin_vel_ee_des_MPC_RATE"] = pin_utils.get_v_(
+    plot_data["lin_vel_ee_des_MPC_RATE"] = get_v_(
         plot_data["q_des_MPC_RATE"],
         plot_data["v_des_MPC_RATE"],
         sim_data["pin_model"],
         sim_data["id_endeff"],
     )
-    plot_data["lin_pos_ee_des_SIM_RATE"] = pin_utils.get_p_(
+    plot_data["lin_pos_ee_des_SIM_RATE"] = get_p_(
         plot_data["q_des_SIM_RATE"], sim_data["pin_model"], sim_data["id_endeff"]
     )
-    plot_data["lin_vel_ee_des_SIM_RATE"] = pin_utils.get_v_(
+    plot_data["lin_vel_ee_des_SIM_RATE"] = get_v_(
         plot_data["q_des_SIM_RATE"],
         plot_data["v_des_SIM_RATE"],
         sim_data["pin_model"],
         sim_data["id_endeff"],
     )
     # Angular
-    plot_data["ang_pos_ee_des_MPC_RATE"] = pin_utils.get_rpy_(
+    plot_data["ang_pos_ee_des_MPC_RATE"] = get_rpy_(
         plot_data["q_des_MPC_RATE"], sim_data["pin_model"], sim_data["id_endeff"]
     )
-    plot_data["ang_vel_ee_des_MPC_RATE"] = pin_utils.get_w_(
+    plot_data["ang_vel_ee_des_MPC_RATE"] = get_w_(
         plot_data["q_des_MPC_RATE"],
         plot_data["v_des_MPC_RATE"],
         sim_data["pin_model"],
         sim_data["id_endeff"],
     )
-    plot_data["ang_pos_ee_des_SIM_RATE"] = pin_utils.get_rpy_(
+    plot_data["ang_pos_ee_des_SIM_RATE"] = get_rpy_(
         plot_data["q_des_SIM_RATE"], sim_data["pin_model"], sim_data["id_endeff"]
     )
-    plot_data["ang_vel_ee_des_SIM_RATE"] = pin_utils.get_w_(
+    plot_data["ang_vel_ee_des_SIM_RATE"] = get_w_(
         plot_data["q_des_SIM_RATE"],
         plot_data["v_des_SIM_RATE"],
         sim_data["pin_model"],
