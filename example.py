@@ -2,7 +2,7 @@ import os
 
 import example_robot_data
 import pinocchio as pin
-from mpc_utils.read_bags_utils import get_mpc_xs_us
+from mpc_utils.read_bags_utils import retrieve_mpc_data
 import yaml
 from mpc_utils.plot_tails import plot_tails
 
@@ -30,7 +30,7 @@ with open("mpc_config.yaml", "r") as file:
     mpc_config = yaml.safe_load(file)
 bag_path = os.path.join(mpc_config["bag_directory"], mpc_config["bag_name"])
 if "mpc_data_topic_name" in mpc_config.keys():
-    mpc_xs, mpc_us = get_mpc_xs_us(
+    mpc_xs, mpc_us = retrieve_mpc_data(
         bag_path,
         mpc_config["mpc_data_topic_name"],
         robot.model.nq + robot.model.nv,

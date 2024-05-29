@@ -24,7 +24,7 @@ def reshape_mpc_data(df_mpc, nx, nv, nb_running_nodes):
     return mpc_xs, mpc_us
 
 
-def get_mpc_xs_us(bag_path, topic, nx, nv, nb_running_nodes):
+def retrieve_mpc_data(bag_path, topic, nx, nv, nb_running_nodes):
     with AnyReader([Path(bag_path)]) as reader:
         df_mpc = get_dataframe(reader, topic, ["data"])
     return reshape_mpc_data(df_mpc, nx, nv, nb_running_nodes)
