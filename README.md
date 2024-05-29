@@ -1,3 +1,4 @@
+
 # mpc_utils
 This project is based on the work of this repository : https://github.com/machines-in-motion/minimal_examples_crocoddyl to plot tails of your mpc.
 
