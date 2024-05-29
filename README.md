@@ -19,3 +19,10 @@ Optional parameters:
     - shape : np.ndarray[number of iteration of your mpc, 3]
 
 To retrieve the data of the predictions, you can use the function retrieve_mpc_data if you have a bag with the data published using ROS message std_msgs::Float64MultiArray on a single topic with the following format [x0, u0, x1, ..., uT-1, xT]
+
+# Installation
+
+You can install a virtual environment with the dependencies to run the code by running :
+```
+source setup.sh
+```

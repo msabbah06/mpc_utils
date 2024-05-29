@@ -1,0 +1,6 @@
+numpy
+rosbags.dataframe
+pyyaml
+matplotlib
+pybullet
+docutils
