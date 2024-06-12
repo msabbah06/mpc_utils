@@ -5,6 +5,7 @@ This project is based on the work of this repository : https://github.com/machin
 
 You can install a virtual environment with the dependencies to run the code by running :
 ```
+source create_virtual_env.sh
 source setup.sh
 ```
 
