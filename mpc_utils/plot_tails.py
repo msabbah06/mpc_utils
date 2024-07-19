@@ -57,7 +57,7 @@ def plot_tails(
     if "T_sim" in mpc_config.keys():
         sim_params["T_sim"] = mpc_config["T_sim"]
     else:
-        sim_params["T_sim"] = int(mpc_xs.shape[0] / mpc_config["mpc_freq"])
+        sim_params["T_sim"] = (mpc_xs.shape[0] - 1) / mpc_config["mpc_freq"]
 
     # Initialize simulation data
     sim_data = init_sim_data(sim_params, ocp_params, mpc_xs[0, 0, :])
