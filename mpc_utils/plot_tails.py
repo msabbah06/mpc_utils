@@ -62,44 +62,36 @@ def plot_tails(
     # Initialize simulation data
     sim_data = init_sim_data(sim_params, ocp_params, mpc_xs[0, 0, :])
 
-    # mpc_cycle = 0
     for mpc_cycle in range(sim_data["N_sim"]):
+        sim_data["state_pred"][mpc_cycle, :, :] = mpc_xs[mpc_cycle, :, :]
+        sim_data["ctrl_pred"][mpc_cycle, :, :] = mpc_us[mpc_cycle, :, :]
+        # Extract relevant predictions for interpolations
+        x_curr = sim_data["state_pred"][
+            mpc_cycle, 0, :
+        ]  # x0* = measured state    (q^,  v^ )
+        x_pred = sim_data["state_pred"][
+            mpc_cycle, 1, :
+        ]  # x1* = predicted state   (q1*, v1*)
+        u_curr = sim_data["ctrl_pred"][
+            mpc_cycle, 0, :
+        ]  # u0* = optimal control   (tau0*)
+        # Record costs references
+        if ctrl_refs is not None:
+            sim_data["ctrl_ref"][mpc_cycle, :] = ctrl_refs[mpc_cycle, :]
+        if state_refs is not None:
+            sim_data["state_ref"][mpc_cycle, :] = state_refs[mpc_cycle, :]
+        if translation_refs is not None:
+            sim_data["lin_pos_ee_ref"][mpc_cycle, :] = translation_refs[mpc_cycle, :]
 
-        # Solve OCP if we are in a planning cycle (MPC/planning frequency)
-        if mpc_cycle % int(sim_params["sim_freq"] / sim_params["mpc_freq"]) == 0:
-            sim_data["state_pred"][mpc_cycle, :, :] = mpc_xs[mpc_cycle, :, :]
-            sim_data["ctrl_pred"][mpc_cycle, :, :] = mpc_us[mpc_cycle, :, :]
-            # Extract relevant predictions for interpolations
-            x_curr = sim_data["state_pred"][
-                mpc_cycle, 0, :
-            ]  # x0* = measured state    (q^,  v^ )
-            x_pred = sim_data["state_pred"][
-                mpc_cycle, 1, :
-            ]  # x1* = predicted state   (q1*, v1*)
-            u_curr = sim_data["ctrl_pred"][
-                mpc_cycle, 0, :
-            ]  # u0* = optimal control   (tau0*)
-            # Record costs references
-            if ctrl_refs is not None:
-                sim_data["ctrl_ref"][mpc_cycle, :] = ctrl_refs[mpc_cycle, :]
-            if state_refs is not None:
-                sim_data["state_ref"][mpc_cycle, :] = state_refs[mpc_cycle, :]
-            if translation_refs is not None:
-                sim_data["lin_pos_ee_ref"][mpc_cycle, :] = translation_refs[
-                    mpc_cycle, :
-                ]
+        # Select reference control and state for the current MPC cycle
+        x_ref_MPC_RATE = x_curr + sim_data["ocp_to_mpc_ratio"] * (x_pred - x_curr)
+        u_ref_MPC_RATE = u_curr
+        if mpc_cycle == 0:
+            sim_data["state_des_MPC_RATE"][mpc_cycle, :] = x_curr
+        sim_data["ctrl_des_MPC_RATE"][mpc_cycle, :] = u_ref_MPC_RATE
+        sim_data["state_des_MPC_RATE"][mpc_cycle + 1, :] = x_ref_MPC_RATE
 
-            # Select reference control and state for the current MPC cycle
-            x_ref_MPC_RATE = x_curr + sim_data["ocp_to_mpc_ratio"] * (x_pred - x_curr)
-            u_ref_MPC_RATE = u_curr
-            if mpc_cycle == 0:
-                sim_data["state_des_MPC_RATE"][mpc_cycle, :] = x_curr
-            sim_data["ctrl_des_MPC_RATE"][mpc_cycle, :] = u_ref_MPC_RATE
-            sim_data["state_des_MPC_RATE"][mpc_cycle + 1, :] = x_ref_MPC_RATE
-
-            sim_data["state_mea_SIM_RATE"][mpc_cycle + 1, :] = mpc_xs[
-                mpc_cycle + 1, 0, :
-            ]
+        sim_data["state_mea_SIM_RATE"][mpc_cycle + 1, :] = mpc_xs[mpc_cycle + 1, 0, :]
 
     plot_data = extract_plot_data_from_sim_data(sim_data)
 
