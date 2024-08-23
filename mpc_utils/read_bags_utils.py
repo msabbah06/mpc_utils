@@ -1,6 +1,7 @@
 import numpy as np
 
 from pathlib import Path
+
 from rosbags.dataframe import get_dataframe
 from rosbags.highlevel import AnyReader
 
@@ -28,3 +29,25 @@ def retrieve_mpc_data(bag_path, topic, nx, nv, nb_running_nodes):
     with AnyReader([Path(bag_path)]) as reader:
         df_mpc = get_dataframe(reader, topic, ["data"])
     return reshape_mpc_data(df_mpc, nx, nv, nb_running_nodes)
+
+
+def get_bag_topic_time(index):
+    # Compute time indices
+    idx_arr = index.to_numpy()
+    t_delta_arr = idx_arr - idx_arr[0]
+    ns2sec = np.vectorize(lambda x: float(x) / 1e9)
+    return ns2sec(t_delta_arr)
+
+
+def convert_ros_duration_to_numpy(data):
+    converted_data = np.zeros(data.shape)
+    for idx, val in enumerate(data):
+        converted_data[idx] = val.sec + val.nanosec / 1e9
+    return converted_data
+
+
+def retrieve_duration_data(bag_path, topic):
+    with AnyReader([Path(bag_path)]) as reader:
+        df = get_dataframe(reader, topic, ["data"])
+    duration_array = convert_ros_duration_to_numpy(df.data.to_numpy())
+    return duration_array, get_bag_topic_time(df.index)
