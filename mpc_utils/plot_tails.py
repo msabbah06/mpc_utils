@@ -40,6 +40,39 @@ def plot_tails(
     translation_refs : translation reference control of your first node at each mpc iteration,
         shape : np.ndarray[number of iteration of your mpc, 3]
     """
+    sim_data, sim_params = get_sim_data(
+        mpc_xs,
+        mpc_us,
+        model,
+        mpc_config,
+        ctrl_refs=None,
+        state_refs=None,
+        translation_refs=None,
+    )
+    plot_data = extract_plot_data_from_sim_data(sim_data)
+    pose = plot_data["lin_pos_ee_pred"][sim_data["N_sim"] - 1, 0, :]
+    des_pose = plot_data["lin_pos_ee_ref"][sim_data["N_sim"] - 1, :]
+    print("final pose ", pose)
+    print("des pose ", des_pose)
+    print("diff", pose - des_pose)
+    print("norm", np.linalg.norm(pose - des_pose))
+    plot_mpc_results(
+        plot_data,
+        which_plots=["x", "u", "ee"],
+        PLOT_PREDICTIONS=True,
+        pred_plot_sampling=int(sim_params["mpc_freq"] / 10),
+    )
+
+
+def get_sim_data(
+    mpc_xs,
+    mpc_us,
+    model,
+    mpc_config,
+    ctrl_refs=None,
+    state_refs=None,
+    translation_refs=None,
+):
     ocp_params = {}
     ocp_params["N_h"] = mpc_config["nb_running_nodes"]
     ocp_params["dt"] = mpc_config["dt_ocp"]
@@ -92,12 +125,4 @@ def plot_tails(
         sim_data["state_des_MPC_RATE"][mpc_cycle + 1, :] = x_ref_MPC_RATE
 
         sim_data["state_mea_SIM_RATE"][mpc_cycle + 1, :] = mpc_xs[mpc_cycle + 1, 0, :]
-
-    plot_data = extract_plot_data_from_sim_data(sim_data)
-
-    plot_mpc_results(
-        plot_data,
-        which_plots=["x", "u", "ee"],
-        PLOT_PREDICTIONS=True,
-        pred_plot_sampling=int(sim_params["mpc_freq"] / 10),
-    )
+    return sim_data, sim_params

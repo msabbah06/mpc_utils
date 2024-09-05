@@ -7,7 +7,6 @@ def plot_mpc_iter_durations(title, mpc_iter_durations, time):
     ax.plot(time, mpc_iter_durations)
     ax.set_xlabel("t (s)")
     ax.set_ylabel("MPC iteration duration (s)")
-    plt.show()
 
 
 def plot_xyz_traj(title, translation_pose_data, time):
@@ -18,4 +17,3 @@ def plot_xyz_traj(title, translation_pose_data, time):
         ax[i].plot(time, translation_pose_data[:, i])
         ax[i].set_xlabel("t (s)")
         ax[i].set_ylabel(axes[i])
-    plt.show()
