@@ -34,7 +34,7 @@ def retrieve_mpc_data(bag_path, topic, nx, nv, nb_running_nodes):
 def get_bag_topic_time(index):
     # Compute time indices
     idx_arr = index.to_numpy()
-    t_delta_arr = idx_arr - idx_arr[0]
+    t_delta_arr = idx_arr
     ns2sec = np.vectorize(lambda x: float(x) / 1e9)
     return ns2sec(t_delta_arr)
 
@@ -51,3 +51,9 @@ def retrieve_duration_data(bag_path, topic):
         df = get_dataframe(reader, topic, ["data"])
     duration_array = convert_ros_duration_to_numpy(df.data.to_numpy())
     return duration_array, get_bag_topic_time(df.index)
+
+
+def retrieve_topic_time(bag_path, topic, field):
+    with AnyReader([Path(bag_path)]) as reader:
+        df = get_dataframe(reader, topic, [field])
+    return get_bag_topic_time(df.index)
