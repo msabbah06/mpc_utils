@@ -67,9 +67,9 @@ last_point = plot_data["lin_pos_ee_pred"][-1, 1, :]
 
 plot_xyz_traj(
     "ee pose ",
-    time,
+    time[:-1],
     np.concatenate((plot_data["lin_pos_ee_pred"][:, 0, :], last_point[np.newaxis, :])),
-    translation_refs,
+    translation_refs[:-1],
 )
 
 plt.show()
