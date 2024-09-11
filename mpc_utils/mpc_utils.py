@@ -37,9 +37,9 @@ def init_sim_data(sim_params, ocp_params, x0):
     sim_data["ocp_to_mpc_ratio"] = sim_data["dt_mpc"] / ocp_params["dt"]
     sim_data["ocp_to_sim_ratio"] = sim_data["dt_sim"] / ocp_params["dt"]
     # Copy OCP params
-    sim_data["nq"] = ocp_params["pin_model"].nq
-    sim_data["nv"] = ocp_params["pin_model"].nv
-    sim_data["nu"] = ocp_params["pin_model"].nq
+    sim_data["nq"] = 12
+    sim_data["nv"] = 12
+    sim_data["nu"] = 7
     sim_data["nx"] = sim_data["nq"] + sim_data["nv"]
     sim_data["pin_model"] = ocp_params["pin_model"]
     sim_data["id_endeff"] = ocp_params["id_endeff"]
@@ -624,7 +624,7 @@ def plot_mpc_control(
     N_mpc = plot_data["N_mpc"]
     dt_mpc = plot_data["dt_mpc"]
     dt_sim = plot_data["dt_sim"]
-    nq = plot_data["nq"]
+    nq = 7
     T_h = plot_data["T_h"]
     N_h = plot_data["N_h"]
     # Create time spans for X and U + Create figs and subplots
